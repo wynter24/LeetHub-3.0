@@ -60,7 +60,7 @@ const parseCustomCommitMessage = (text, problemContext) => {
   return text.replace(/{(\w+)}/g, (match, key) => {
     // check if the variable exists in the problemContext and replace the matching text
     return problemContext.hasOwnProperty(key) ? problemContext[key] : match;
-});
+  });
 }
 
 /* returns custom commit message or null if doesn't exist */
@@ -68,7 +68,7 @@ const getCustomCommitMessage = (problemContext) => {
   return new Promise((resolve, reject) => {
     chrome.storage.local.get('custom_commit_message', (result) => {
       if (chrome.runtime.lastError) {
-        reject(chrome.runtime.lastError); 
+        reject(chrome.runtime.lastError);
       } else if (!result.custom_commit_message || !result.custom_commit_message.trim()) {
         resolve(null) // no custom message is set
       } else {
@@ -81,7 +81,7 @@ const getCustomCommitMessage = (problemContext) => {
 
 /* Main function for uploading code to GitHub repo, and callback cb is called if success */
 const upload = (token, hook, code, problem, filename, sha, commitMsg, cb = undefined) => {
-  const URL = `https://api.github.com/repos/${hook}/contents/${problem}/${filename}`;
+  const URL = `https://api.github.com/repos/${hook}/contents/leetcode/${problem}/${filename}`;
 
   /* Define Payload */
   let data = {
@@ -277,7 +277,7 @@ function uploadGit(
 
 /* Gets updated GitHub data for the specific file in repo in question */
 async function getUpdatedData(token, hook, directory, filename) {
-  const URL = `https://api.github.com/repos/${hook}/contents/${directory}/${filename}`;
+  const URL = `https://api.github.com/repos/${hook}/contents/leetcode/${directory}/${filename}`;
 
   let options = {
     method: 'GET',
@@ -331,7 +331,7 @@ function formatStats(time, timePercentile, space, spacePercentile) {
   return `Time: ${time} (${timePercentile}%), Space: ${space} (${spacePercentile}%) - LeetHub`;
 }
 
-function getGitIcon(){
+function getGitIcon() {
   // Create an SVG element
   var gitSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   gitSvg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
@@ -415,7 +415,7 @@ document.addEventListener('click', event => {
         oldPath !== window.location.pathname &&
         oldPath === window.location.pathname.substring(0, oldPath.length) &&
         !Number.isNaN(window.location.pathname.charAt(oldPath.length))
-        ) {
+      ) {
         const date = new Date();
         const currentDate = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()} at ${date.getHours()}:${date.getMinutes()}`;
         const addition = `[Discussion Post (created on ${currentDate})](${window.location})  \n`;
@@ -750,7 +750,7 @@ function LeetCodeV2() {
 LeetCodeV2.prototype.init = async function () {
   const problem = document.URL.match(/leetcode.com\/problems\/([^\/]*)\//);
   const val = await chrome.storage.local.get(problem[1]);
-  if(!val){
+  if (!val) {
     alert("Have you submitted this problem yet?");
     return false;
   }
@@ -831,7 +831,7 @@ LeetCodeV2.prototype.getLanguageExtension = function () {
 LeetCodeV2.prototype.getNotesIfAny = function () { };
 
 
-LeetCodeV2.prototype.extractQuestionNumber = function() {
+LeetCodeV2.prototype.extractQuestionNumber = function () {
   let qNum = this.submissionData.question.questionId; // Default to questionId
 
   const content = document.getElementById("qd-content");
@@ -1019,7 +1019,7 @@ LeetCodeV2.prototype.markUploadFailed = function () {
 LeetCodeV2.prototype.addManualSubmitButton = function () {
   let elem = document.getElementById('manualGitSubmit');
   const domain = document.URL.match(/:\/\/(www\.)?(.[^/:]+)/)[2].split('.')[0];
-  if (elem || domain != 'leetcode' ) {
+  if (elem || domain != 'leetcode') {
     return;
   }
 
@@ -1048,10 +1048,10 @@ LeetCodeV2.prototype.addManualSubmitButton = function () {
 };
 
 /* Validate if string can be added as suffix. Can add more constrains if necessary. */
-function isValidSuffix (string) {
+function isValidSuffix(string) {
   if (!string || string.length > 255) {
-		return false;
-	}
+    return false;
+  }
   return true;
 }
 
@@ -1059,7 +1059,7 @@ LeetCodeV2.prototype.addUrlChangeListener = function () {
   window.navigation.addEventListener('navigate', event => {
     const problem = window.location.href.match(/leetcode.com\/problems\/(.*)\/submissions/);
     const submissionId = window.location.href.match(/\/(\d+)(\/|\?|$)/);
-    if(problem && problem.length > 1 && submissionId && submissionId.length > 1){
+    if (problem && problem.length > 1 && submissionId && submissionId.length > 1) {
       chrome.storage.local.set({ [problem[1]]: submissionId[1] });
     }
   })
@@ -1158,7 +1158,7 @@ const loader = (leetCode, suffix) => {
           false,
         );
       }
-      
+
       const problemContext = {
         "time": `${probStats.time} (${probStats.timePercentile}%)`,
         "space": `${probStats.space} (${probStats.spacePercentile}%)`,
@@ -1214,7 +1214,7 @@ const observer = new MutationObserver(function (_mutations, observer) {
   const textareaList = document.getElementsByTagName('textarea');
   const textarea = textareaList.length === 4 ? textareaList[2] : (textareaList.length === 2 ? textareaList[0] : textareaList[1]);
 
-  if(v1SubmitBtn) {
+  if (v1SubmitBtn) {
     observer.disconnect();
 
     const leetCode = new LeetCodeV1();
@@ -1222,7 +1222,7 @@ const observer = new MutationObserver(function (_mutations, observer) {
     return;
   }
 
-  if(v2SubmitBtn && textarea) {
+  if (v2SubmitBtn && textarea) {
     observer.disconnect();
 
     const leetCode = new LeetCodeV2();
